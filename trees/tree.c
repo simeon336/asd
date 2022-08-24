@@ -23,14 +23,44 @@ node *add(node *root, int data){
     return root;
 };
 
+void *treverse(node *root){
+    if(root->left != NULL){
+        treverse(root->left);
+    }
+    printf("%d, ", root->data);
+
+    if(root->right != NULL){
+        treverse(root->right);
+    }
+    
+}
+
+void delete(node *root, int data){
+    if(root->data = data){
+        if(root->left == NULL && root->right == NULL){
+            free(root);
+        } else if(root->left != NULL || root->right != NULL){
+            
+        }
+
+    }else if(data > root->data){
+        delete(root->right, data);
+    }else{
+        delete(root->left, data);
+    }
+}
+
 int main(){
 
     node *root = add(root, 6);
     add(root, 4);
+    add(root, 5);
+    add(root, 2);
     add(root, 8);
-    printf("Root: %d\n", root->data);
-    printf("Left: %d\n", root->left->data);
-    printf("Right: %d\n", root->right->data);
+    add(root, 12);
+    add(root, 7);
+    add(root, 19);
+    treverse(root);
 
     return 0;
 }
