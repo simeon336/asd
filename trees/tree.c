@@ -35,7 +35,7 @@ void *treverse(node *root){
     
 }
 
-void delete(node *root, int data){
+node* delete(node *root, int data){
     if(root->data = data){
         if(root->left == NULL && root->right == NULL){
             free(root);
