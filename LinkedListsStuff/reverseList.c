@@ -33,7 +33,7 @@ void add(list *List, int val){
 
 }
 
-list* reverse(list *List){
+void reverse(list *List){
     node *prev = NULL;
     node *curr = List->head->next;
     node *nxt = NULL;
@@ -45,7 +45,6 @@ list* reverse(list *List){
         curr = nxt;
     }
     List->head->next = prev;
-    return List;
 }
 
 int traverse(list *List){
@@ -71,7 +70,7 @@ int main(){
     add(List, 6);
     add(List, 7);
     traverse(List);
-    List = reverse(List);
+    reverse(List);
     traverse(List);
     return 0;
 }
