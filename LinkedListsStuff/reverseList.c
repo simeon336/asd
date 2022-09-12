@@ -13,7 +13,7 @@ typedef struct list{
 list *init(){
     list *newList = malloc(sizeof(list));
     newList->head = malloc(sizeof(node));
-    newList->head->next = NULL;
+    newList->head = NULL;
     return newList;
 }
 
@@ -21,21 +21,21 @@ void add(list *List, int val){
     node *newNode = malloc(sizeof(node));
     newNode->val = val;
 
-    if(List->head->next == NULL){
-        List->head->next = newNode;
+    if(List->head == NULL){
+        List->head = newNode;
         newNode->next = NULL;
         return;
     }
 
-    node *temp = List->head->next;
-    List->head->next = newNode;
+    node *temp = List->head;
+    List->head = newNode;
     newNode->next = temp;
 
 }
 
 void reverse(list *List){
     node *prev = NULL;
-    node *curr = List->head->next;
+    node *curr = List->head;
     node *nxt = NULL;
 
     while(curr != NULL){
@@ -44,12 +44,12 @@ void reverse(list *List){
         prev = curr;
         curr = nxt;
     }
-    List->head->next = prev;
+    List->head = prev;
 }
 
 int traverse(list *List){
     int count = 0;
-    node *temp = List->head->next;
+    node *temp = List->head;
     while(temp != NULL){
         count++;
         printf("%d->", temp->val);
