@@ -8,7 +8,7 @@ typedef struct node{
 
 node *add(node *root, int data){
     if(root == NULL){
-        root = (node*)malloc(sizeof(node*));
+        root = (node*)malloc(sizeof(node));
         root->data = data;
         root->left = NULL;
         root->right = NULL;
