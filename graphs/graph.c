@@ -1,90 +1,109 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
-typedef struct graph{
-    int nodes;
-    bool **egdes;
-} graph;
+typedef struct node{
+    int val;
+    struct node **items;
+    int count;
+    char visited;
+} node;
 
-void destroy(graph *g){
-    if(g->egdes == NULL){
-        free(g);
+node *create(int val){
+    node *newNode = (node*)malloc(sizeof(node));
+    newNode->val = val;
+    newNode->count = 0;
+    newNode->items = calloc(sizeof(node*), 1);
+    newNode->visited = 0;
+
+    return newNode;
+}
+
+void connect(node* a, node *b){
+    if(a == NULL || b == NULL){
         return;
     }
+   
+    a->items = (node**)realloc(a->items, (1 + a->count)* sizeof(node*));
+    a->items[a->count++] = b;
+}
 
-    for(int i = 0; i < g->nodes; i++){
-        if(g->egdes[i] != NULL){
-            free(g->egdes[i]);
+
+
+node *dfs(node *start, int val){
+    if(start->val == val){
+        return start;
+    }
+
+    start->visited = 1;
+
+    for(int i = 0; i < start->count; i++){
+        if(start->items[i]->visited == 1){
+            continue;
+        }
+
+        node *temp = dfs(start->items[i], val);
+        return temp;
+
+        if(temp != NULL){
+            start->visited = 0;
+            return temp;
         }
     }
-
-    free(g->egdes);
-    free(g);
+    
+    start->visited = 0;
+    return NULL;
 }
 
-graph *create(int num){
-    graph *g = (graph*)malloc(sizeof(graph));
-    if(g == NULL){
-        return NULL;
+void connectByNUm(node* start, int a, int b){
+    node *parent = dfs(start, a);
+    node *child = dfs(start, b);
+    connect(parent, child);
+}
+
+void add(node *start, int parent, int val){
+    node *temp = dfs(start, parent);
+    node *newNode = create(val);
+    connect(temp, newNode);
+}
+
+node* printDFS(node *start, int val){
+    printf("%d, ", start->val);
+    if(start->val == val){
+        return start;
     }
 
-    g->nodes = num;
-    g->egdes = calloc(sizeof(bool*), g->nodes);
-    if(g->egdes == NULL){
-        free(g);
-        return NULL;
-    }
+    start->visited = 1;
 
-    for(int i = 0; i < num; i++){
-        g->egdes[i] = calloc(sizeof(bool), g->nodes);
-        if(g->egdes[i] == NULL){
-            destroy(g);
-            return NULL;
+    for(int i = 0; i < start->count; i++){
+        if(start->items[i]->visited == 1){
+            continue;
+        }
+
+        node *temp = dfs(start->items[i], val);
+        printf("%d", temp->val);
+        return temp;
+
+        if(temp != NULL){
+            start->visited = 0;
+            return temp;
         }
     }
-
-    return g;
-}
-
-void print(graph *g){
-    printf("digraph{\n");
-
-    for(int from = 0; from < g->nodes; from++){
-        for(int to = 0; to < g->nodes; to++){
-            if(g->egdes[from][to]){
-                printf("%d -> %d; \n", from, to);
-            }
-            
-        }
-    }
-    printf("}\n");
-}
-
-bool hasEdge(graph *g, unsigned int fromNode, unsigned int toNode){
-    return g->egdes[fromNode][toNode];
-}
-
-bool add(graph* g, unsigned int fromNode, unsigned int toNode){
-    if(hasEdge(g, fromNode, toNode)){
-        return false;
-    }
-    g->egdes[fromNode][toNode] = true;
-
-    return true;
+    
+    start->visited = 0;
+    return NULL;
 }
 
 int main(){
-    graph *g1 = create(5);
-    add(g1, 0, 1);
-    add(g1, 2, 1);
-    add(g1, 1, 0);
-    add(g1, 3, 2);
-    add(g1, 2, 1);
-    add(g1, 0, 4);
-    add(g1, 4, 1);
-    print(g1);
+    node *n1 = create(0);
+    add(n1, 0, 1);
+    add(n1, 0, 2);
+    add(n1, 1, 3);
+    add(n1, 3, 4);
+    add(n1, 4, 5);
+    
+    printf("%d", n1->items[0]->val);
+    printf("%d", n1->items[1]->val);
+    
 
-    destroy(g1);
     return 0;
 }
